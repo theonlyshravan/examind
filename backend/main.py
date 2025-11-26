@@ -22,10 +22,39 @@ def search():
         return jsonify({"error": "No query provided"}), 400
 
     try:
-        response = exa_client.search(query, num_results=num_results)
-        results = [{"title": r.title, "url": r.url} for r in response.results]
-        return jsonify({"results": results})
+        # Use search_and_contents to get text and summary
+        # type="neural" for semantic search
+        response = exa_client.search_and_contents(
+            query,
+            num_results=num_results,
+            type="neural",
+            text=True,
+            summary=True
+        )
+        
+        results = []
+        # Try to get best answer from top-level response if available, otherwise None
+        best_answer = getattr(response, "summary", None) or getattr(response, "best_answer", None)
+
+        for r in response.results:
+            # Prioritize summary, then text, then snippet
+            snippet = getattr(r, "summary", None) or getattr(r, "text", None) or getattr(r, "snippet", None)
+            
+            results.append({
+                "title": getattr(r, "title", None),
+                "url": getattr(r, "url", None),
+                "snippet": snippet,
+                "score": getattr(r, "score", None),
+                "id": getattr(r, "id", None),
+                "published_date": getattr(r, "published_date", None)
+            })
+            
+        return jsonify({
+            "best_answer": best_answer,
+            "results": results
+        })
     except Exception as e:
+        print(f"Error during search: {e}")
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":

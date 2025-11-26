@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExaMind - Semantic Search</title>
+    <meta name="description" content="A deep-tech semantic search engine powered by Exa API.">
+    <link rel="icon" href="assets/logo.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        void: '#0B0C15',
+                        slate: {
+                            800: '#1E293B',
+                            400: '#94A3B8',
+                        },
+                        surface: '#1E293B',
+                        indigo: {
+                            500: '#6366F1',
+                            600: '#4F46E5',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0C15;
+            color: white;
+        }
+
+        .glass-card {
+            background-color: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-nav {
+            background-color: rgba(11, 12, 21, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* HTML: <div class="loader"></div> */
+        .loader {
+            width: 50px;
+            aspect-ratio: 1.154;
+            position: relative;
+            background: conic-gradient(from 120deg at 50% 64%, #0000, #6366F1 1deg 120deg, #0000 121deg);
+            animation: l27-0 1.5s infinite cubic-bezier(0.3, 1, 0, 1);
+        }
+
+        .loader:before,
+        .loader:after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: inherit;
+            transform-origin: 50% 66%;
+            animation: l27-1 1.5s infinite;
+        }
+
+        .loader:after {
+            --s: -1;
+        }
+
+        @keyframes l27-0 {
+
+            0%,
+            30% {
+                transform: rotate(0)
+            }
+
+            70% {
+                transform: rotate(120deg)
+            }
+
+            70.01%,
+            100% {
+                transform: rotate(360deg)
+            }
+        }
+
+        @keyframes l27-1 {
+            0% {
+                transform: rotate(calc(var(--s, 1)*120deg)) translate(0)
+            }
+
+            30%,
+            70% {
+                transform: rotate(calc(var(--s, 1)*120deg)) translate(calc(var(--s, 1)*-5px), 10px)
+            }
+
+            100% {
+                transform: rotate(calc(var(--s, 1)*120deg)) translate(0)
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- Navigation -->
+    <nav class="glass-nav fixed top-0 w-full z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <a href="#" class="flex items-center gap-3 group">
+                        <img src="assets/logo.png" alt="ExaMind Logo"
+                            class="w-10 h-10 rounded-lg shadow-lg shadow-indigo-500/20 group-hover:shadow-indigo-500/40 transition-all object-cover"
+                            style="filter: hue-rotate(45deg) saturate(1.2);">
+                        <span
+                            class="font-display font-bold text-xl tracking-widest text-white group-hover:text-indigo-400 transition-colors uppercase">EXAMIND</span>
+                    </a>
+                </div>
+
+                <!-- Desktop Menu -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <!-- Links removed for cleaner look -->
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                        aria-controls="mobile-menu" aria-expanded="false" id="mobile-menu-btn">
+                        <span class="sr-only">Open main menu</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div class="md:hidden hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-void border-b border-white/5">
+                <a href="#" class="block px-3 py-2 rounded-md text-base font-medium text-white bg-slate-800">Search</a>
+                <a href="#"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-slate-400 hover:text-white hover:bg-slate-800">About</a>
+                <a href="#"
+                    class="block px-3 py-2 rounded-md text-base font-medium text-slate-400 hover:text-white hover:bg-slate-800">API</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main
+        class="flex-grow flex flex-col items-center justify-start pt-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+
+        <!-- Background Gradients -->
+        <div
+            class="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-indigo-600/20 rounded-full blur-[120px] -z-10 pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-0 right-0 w-[800px] h-[600px] bg-purple-600/10 rounded-full blur-[100px] -z-10 pointer-events-none">
+        </div>
+
+        <!-- Search Hero -->
+        <div class="w-full max-w-3xl text-center mb-12 animate-fade-in-up">
+            <h1 id="greeting"
+                class="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-white mb-6 tracking-tight">
+                <!-- Greeting will be injected here -->
+            </h1>
+
+            <!-- Search Bar -->
+            <div class="relative group max-w-2xl mx-auto">
+                <div
+                    class="absolute -inset-0.5 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-1000 group-hover:duration-200">
+                </div>
+                <div class="relative flex items-center bg-slate-900 rounded-xl p-2 shadow-2xl border border-white/10">
+                    <!-- Search Icon -->
+                    <div class="pl-3 text-slate-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                    </div>
+
+                    <!-- Input -->
+                    <input type="text" id="search-input"
+                        class="flex-grow bg-transparent text-white placeholder-slate-500 px-4 py-3 focus:outline-none text-lg font-medium w-full"
+                        placeholder="What are you looking for?" aria-label="Search query" autocomplete="off">
+
+                    <!-- Controls -->
+                    <div class="flex items-center gap-2 border-l border-white/10 pl-2">
+                        <button id="search-btn"
+                            class="bg-indigo-600 hover:bg-indigo-500 text-white p-3 rounded-lg transition-all shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50 focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-slate-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <!-- Results Section -->
+        <div id="main-results-wrapper" class="w-full max-w-5xl pb-20 min-h-[200px]">
+            <!-- Loading State (Hidden by default) -->
+            <div id="loading-state" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 mt-20 w-64 text-center">
+                <div class="loader mx-auto mb-8"></div>
+                <p id="loading-text" class="text-sm text-slate-400 font-mono">Searching knowledge base...</p>
+            </div>
+
+            <!-- New Results Area -->
+            <div id="results-area" class="max-w-3xl mx-auto mt-12 hidden opacity-0 transition-opacity duration-500">
+
+                <div class="mb-8">
+                    <h3 class="text-xs font-mono text-slate-500 uppercase tracking-wider mb-3">Sources</h3>
+                    <div id="sources-list" class="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
+                        <!-- Sources injected here -->
+                    </div>
+                </div>
+
+                <div class="mb-10">
+                    <div id="best-answer" class="bg-surface/50 border border-white/5 rounded-lg p-6">
+                        <!-- Best answer injected here -->
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xs font-mono text-slate-500 uppercase tracking-wider mb-3">More Results</h3>
+                    <div id="results-list" class="space-y-6 pl-4 border-l border-white/10">
+                        <!-- Standard results injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
