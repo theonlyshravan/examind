@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // DOM Elements
+    // --- DOM Elements ---
     const searchInput = document.getElementById('search-input');
     const searchBtn = document.getElementById('search-btn');
     const greetingEl = document.getElementById('greeting');
@@ -7,7 +7,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
 
-    // 1. Set Dynamic Greeting
+    // --- Initialization ---
+
+    // Set a dynamic greeting based on the current time of day
     const hour = new Date().getHours();
     let greeting = "Good evening";
     if (hour < 12) greeting = "Good morning";
@@ -15,14 +17,16 @@ document.addEventListener('DOMContentLoaded', () => {
     greetingEl.textContent = `${greeting}, how can I help?`;
     greetingEl.className = "text-3xl font-medium text-white mb-8 tracking-tight";
 
-    // Mobile Menu Toggle
+    // --- Event Listeners ---
+
+    // Toggle mobile menu visibility
     mobileMenuBtn.addEventListener('click', () => {
         mobileMenu.classList.toggle('hidden');
         const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
         mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
     });
 
-    // Event Listeners
+    // Handle search execution
     searchBtn.addEventListener('click', performSearch);
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -30,18 +34,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Search Function
-    // 2. Updated Search Logic
+    // --- Core Functionality ---
+
+    /**
+     * Executes the search operation.
+     * Manages UI state (loading, results, error) and fetches data from the backend.
+     */
     async function performSearch() {
         const query = searchInput.value.trim();
         if (!query) return;
 
-        // Hide Hero, Show Loader
-        // document.getElementById('hero-text')?.classList.add('hidden'); // Hero text removed in HTML
+        // Reset UI to loading state
         document.getElementById('results-area').classList.add('hidden');
         document.getElementById('loading-state').classList.remove('hidden');
 
-        // Multi-step Loader Animation
+        // Cycle through loading messages to indicate progress
         const steps = ["Searching knowledge base...", "Reading sources...", "Synthesizing answer..."];
         let stepIndex = 0;
         const interval = setInterval(() => {
@@ -50,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 700);
 
         try {
-            // Hardcode num_results to 10
+            // Fetch results from the backend
             const encodedQuery = encodeURIComponent(query);
             const response = await fetch(`http://127.0.0.1:5000/search?query=${encodedQuery}&num_results=10`);
             const data = await response.json();
@@ -72,18 +79,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Render Results
-    // 3. New Render Logic
+    /**
+     * Renders the search results into the DOM.
+     * Populates the sources list, the synthesized best answer, and the detailed results list.
+     * @param {Array} results - The list of search result objects.
+     */
     function renderLayout(results) {
         const sourcesList = document.getElementById('sources-list');
         const bestAnswer = document.getElementById('best-answer');
         const resultsList = document.getElementById('results-list');
 
+        // Clear previous results
         sourcesList.innerHTML = '';
         bestAnswer.innerHTML = '';
         resultsList.innerHTML = '';
 
-        // Render Sources
+        // 1. Render Source Pills
         results.forEach(res => {
             let domain = '';
             try {
@@ -100,15 +111,15 @@ document.addEventListener('DOMContentLoaded', () => {
             sourcesList.appendChild(pill);
         });
 
-        // Render "Quick Answer"
+        // 2. Render "Quick Answer" (Synthesized Summary)
         const topRes = results[0];
         let summary = topRes.snippet || topRes.summary || topRes.text?.substring(0, 300) + "..." || "No summary available.";
 
-        // simple formatter: turn **text** into <b>text</b> and - into bullets with newlines
+        // Format the summary for better readability (bolding, lists)
         summary = summary
             .replace(/\*\*(.*?)\*\*/g, '<b class="text-white">$1</b>')
-            .replace(/(?:\r\n|\r|\n)/g, '<br>') // handle existing newlines
-            .replace(/- /g, '<br>• ');       // handle bullet points
+            .replace(/(?:\r\n|\r|\n)/g, '<br>')
+            .replace(/- /g, '<br>• ');
 
         bestAnswer.innerHTML = `
             <div class="prose prose-invert max-w-none">
@@ -120,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
 
-        // Render Vertical List (Rest of results)
+        // 3. Render Detailed Results List
         results.slice(1).forEach(res => {
             let domain = '';
             try {
@@ -141,11 +152,13 @@ document.addEventListener('DOMContentLoaded', () => {
             resultsList.appendChild(item);
         });
 
+        // Reveal the results area with a fade-in effect
         document.getElementById('results-area').classList.remove('hidden');
         setTimeout(() => document.getElementById('results-area').classList.remove('opacity-0'), 50);
     }
 
-    // Helper Functions
+    // --- Helper Functions ---
+
     function hideAllStates() {
         loadingState.classList.add('hidden');
         errorState.classList.add('hidden');
@@ -173,6 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
         emptyState.classList.remove('hidden');
     }
 
+    /**
+     * Escapes HTML characters to prevent XSS.
+     */
     function escapeHtml(unsafe) {
         if (!unsafe) return '';
         return unsafe

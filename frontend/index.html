@@ -229,35 +229,37 @@
             </div>
         </div>
 
-        <!-- Results Section -->
-        <!-- Results Section -->
+        <!-- Main Results Container -->
         <div id="main-results-wrapper" class="w-full max-w-5xl pb-20 min-h-[200px]">
-            <!-- Loading State (Hidden by default) -->
+            <!-- Loading Indicator (Initially Hidden) -->
             <div id="loading-state" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 mt-20 w-64 text-center">
                 <div class="loader mx-auto mb-8"></div>
                 <p id="loading-text" class="text-sm text-slate-400 font-mono">Searching knowledge base...</p>
             </div>
 
-            <!-- New Results Area -->
+            <!-- Results Display Area -->
             <div id="results-area" class="max-w-3xl mx-auto mt-12 hidden opacity-0 transition-opacity duration-500">
 
+                <!-- Source Citations -->
                 <div class="mb-8">
                     <h3 class="text-xs font-mono text-slate-500 uppercase tracking-wider mb-3">Sources</h3>
                     <div id="sources-list" class="flex gap-3 overflow-x-auto hide-scrollbar pb-2">
-                        <!-- Sources injected here -->
+                        <!-- Dynamic source pills injected via JavaScript -->
                     </div>
                 </div>
 
+                <!-- Synthesized Best Answer -->
                 <div class="mb-10">
                     <div id="best-answer" class="bg-surface/50 border border-white/5 rounded-lg p-6">
-                        <!-- Best answer injected here -->
+                        <!-- AI-generated summary injected via JavaScript -->
                     </div>
                 </div>
 
+                <!-- Detailed Search Results -->
                 <div>
                     <h3 class="text-xs font-mono text-slate-500 uppercase tracking-wider mb-3">More Results</h3>
                     <div id="results-list" class="space-y-6 pl-4 border-l border-white/10">
-                        <!-- Standard results injected here -->
+                        <!-- Result items injected via JavaScript -->
                     </div>
                 </div>
             </div>
