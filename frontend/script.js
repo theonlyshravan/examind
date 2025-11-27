@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.getElementById('search-input');
     const searchBtn = document.getElementById('search-btn');
     const greetingEl = document.getElementById('greeting');
+    const searchContainer = document.getElementById('search-container');
     const loadingText = document.getElementById('loading-text');
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -44,9 +45,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const query = searchInput.value.trim();
         if (!query) return;
 
+        // Move Search Bar Up
+        searchContainer.classList.remove('mt-[30vh]');
+        searchContainer.classList.add('mt-24');
+
+        // Hide Greeting
+        greetingEl.classList.add('hidden');
+
         // Reset UI to loading state
         document.getElementById('results-area').classList.add('hidden');
         document.getElementById('loading-state').classList.remove('hidden');
+        document.getElementById('loading-state').classList.add('flex');
 
         // Cycle through loading messages to indicate progress
         const steps = ["Searching knowledge base...", "Reading sources...", "Synthesizing answer..."];

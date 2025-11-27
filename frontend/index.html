@@ -173,8 +173,7 @@
     </nav>
 
     <!-- Main Content -->
-    <main
-        class="flex-grow flex flex-col items-center justify-start pt-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <main class="flex-grow flex flex-col items-center px-4 sm:px-6 lg:px-8 relative overflow-hidden min-h-screen">
 
         <!-- Background Gradients -->
         <div
@@ -185,7 +184,8 @@
         </div>
 
         <!-- Search Hero -->
-        <div class="w-full max-w-3xl text-center mb-12 animate-fade-in-up">
+        <div id="search-container"
+            class="w-full max-w-3xl text-center mb-8 mt-[30vh] transition-all duration-700 ease-in-out z-10">
             <h1 id="greeting"
                 class="text-4xl sm:text-5xl md:text-6xl font-display font-bold text-white mb-6 tracking-tight">
                 <!-- Greeting will be injected here -->
@@ -227,9 +227,9 @@
         </div>
 
         <!-- Main Results Container -->
-        <div id="main-results-wrapper" class="w-full max-w-5xl pb-20 min-h-[200px]">
+        <div id="main-results-wrapper" class="w-full max-w-5xl pb-20 min-h-[200px] transition-opacity duration-500">
             <!-- Loading Indicator (Initially Hidden) -->
-            <div id="loading-state" class="hidden absolute top-1/2 left-1/2 -translate-x-1/2 mt-20 w-64 text-center">
+            <div id="loading-state" class="hidden flex-col items-center justify-center mt-12 w-full text-center">
                 <div class="loader mx-auto mb-8"></div>
                 <p id="loading-text" class="text-sm text-slate-400 font-mono">Searching knowledge base...</p>
             </div>
