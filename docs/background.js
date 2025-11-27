@@ -19,6 +19,7 @@ App.setup = function () {
     canvas.style.height = '100%';
     canvas.style.zIndex = '-1'; // Behind everything
     canvas.style.pointerEvents = 'none'; // Don't block clicks
+    canvas.style.filter = 'blur(4px)'; // Blur for better readability
 
     document.body.appendChild(canvas);
 
@@ -100,9 +101,9 @@ App.birth = function () {
         x = gridSpot.x, y = gridSpot.y;
 
     var particle = {
-        hue: 200,// + Math.floor(50*Math.random()),
-        sat: 95,//30 + Math.floor(70*Math.random()),
-        lum: 20 + Math.floor(40 * Math.random()),
+        hue: 240, // Fixed Indigo Hue
+        sat: 80,  // Fixed Saturation
+        lum: 60,  // Fixed Lightness
         x: x, y: y,
         xLast: x, yLast: y,
         xSpeed: 0, ySpeed: 0,
@@ -226,7 +227,7 @@ App.draw = function () {
 
         var h, s, l, a;
 
-        h = p.hue + this.stepCount / 30;
+        h = p.hue; // Fixed hue
         s = p.sat;
         l = p.lum;
         a = 1;
