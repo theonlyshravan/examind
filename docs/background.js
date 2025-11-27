@@ -19,7 +19,7 @@ App.setup = function () {
     canvas.style.height = '100%';
     canvas.style.zIndex = '-1'; // Behind everything
     canvas.style.pointerEvents = 'none'; // Don't block clicks
-    canvas.style.filter = 'blur(4px)'; // Blur for better readability
+    canvas.style.filter = 'blur(2px)'; // Blur for better readability
 
     document.body.appendChild(canvas);
 
