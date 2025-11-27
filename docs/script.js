@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             // Fetch results from the backend
             const encodedQuery = encodeURIComponent(query);
-            const response = await fetch(`https://exa-search-engine-eeyf.onrender.com/search?query=${encodedQuery}&num_results=10`);
+            const response = await fetch(`https://examind-s0k9.onrender.com/search?query=${encodedQuery}&num_results=10`);
             const data = await response.json();
 
             clearInterval(interval);
